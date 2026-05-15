@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能资源推荐 - 数智国防教育系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2C1810, #8B4513, #2C1810);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            margin-right: 30px;
+            height: fit-content;
+        }
+
+        .sidebar-header {
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 1.8rem;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .sidebar-title i {
+            font-size: 1.5rem;
+        }
+
+        .recommend-guide {
+            font-size: 1rem;
+            color: #FFE4B5;
+            line-height: 1.7;
+            margin-top: 20px;
+        }
+
+        .recommend-guide h3 {
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .recommend-guide ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .recommend-guide li {
+            margin-bottom: 8px;
+        }
+
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .back-btn {
+            background: rgba(255, 215, 0, 0.15);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateX(-5px);
+        }
+
+        .current-title {
+            font-size: 2rem;
+            color: #FFD700;
+            text-align: center;
+            flex: 1;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        /* 搜索区域样式 */
+        .search-section {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(139, 69, 19, 0.3);
+            color: white;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 228, 181, 0.7);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #2C1810;
+            border: none;
+            padding: 0 35px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+
+        .examples {
+            margin-top: 25px;
+        }
+
+        .examples h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tag {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #FFE4B5;
+        }
+
+        .tag:hover {
+            background: rgba(255, 215, 0, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* 推荐结果网格 */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* 结果卡片样式 */
+        .result-card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .result-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.35);
+            background: rgba(255, 215, 0, 0.12);
+        }
+
+        .result-thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .icon-thumbnail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 180px;
+            font-size: 4rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .video-icon {
+            background: linear-gradient(135deg, #DC143C, #B22222);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .doc-icon {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: rgba(44, 24, 16, 0.9);
+        }
+
+        .result-info {
+            padding: 20px;
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #FFE4B5;
+        }
+
+        .result-type {
+            font-size: 0.9rem;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .result-tag {
+            background: rgba(255, 215, 0, 0.15);
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            color: #FFE4B5;
+        }
+
+        .match-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: #FFA500;
+            margin-top: 15px;
+        }
+
+        .match-bar {
+            width: 100px;
+            height: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .match-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFA500, #FFD700);
+            border-radius: 4px;
+        }
+
+        /* 结果分类标题 */
+        .result-category {
+            grid-column: 1 / -1;
+            margin: 20px 0 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-category i {
+            font-size: 1.5rem;
+            color: #FFD700;
+        }
+
+        /* 讯飞embedding模型状态 */
+        .model-status {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            font-size: 0.9rem;
+            color: #FFE4B5;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background-color: #FFA500;
+            box-shadow: 0 0 10px #FFA500;
+        }
+
+        .status-inactive {
+            background-color: #DC143C;
+        }
+
+        .status-loading {
+            background-color: #FFD700;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* 加载动画 */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 215, 0, 0.1);
+            border-top: 5px solid #FFD700;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+
+        /* 欢迎消息 */
+        .welcome-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .welcome-message i {
+            font-size: 3rem;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h3 {
+            font-size: 1.5rem;
+            color: #FFE4B5;
+        }
+
+        .welcome-message p {
+            color: #FFE4B5;
+            margin-top: 15px;
+            opacity: 0.7;
+        }
+
+        /* 粒子背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.7);
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                padding: 15px;
+            }
+        }
+
+        /* 结果标题样式 */
+        .results-header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .results-title {
+            font-size: 1.6rem;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-count {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #FFE4B5;
+        }
+
+        /* 初始化按钮样式 */
+        .init-btn {
+            background: linear-gradient(135deg, #FFA500, #FF8C00);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .init-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+        }
+
+        /* 没有结果的样式 */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            color: #FFE4B5;
+        }
+
+        .no-results p {
+            color: #FFE4B5;
+            margin-top: 15px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">
+                    <i class="fas fa-lightbulb"></i> 智能推荐
+                </h2>
+            </div>
+
+            <div class="recommend-guide">
+                <h3>推荐说明</h3>
+                <p>根据您的学习需求智能匹配最相关的国防教育资源。</p>
+
+                <h3>使用指南</h3>
+                <ul>
+                    <li>输入您的学习需求或关键词</li>
+                    <li>系统将分析语义并匹配相关资源</li>
+                    <li>点击卡片跳转到对应资源</li>
+                    <li>匹配度越高表示相关性越强</li>
+                </ul>
+
+                <h3>技术说明</h3>
+                <p>采用讯飞embedding模型进行文本嵌入，分析查询与资源的语义相似度，确保推荐精准度。</p>
+
+                <div class="model-status">
+                    <p><span class="status-indicator status-loading"></span> 正在连接讯飞embedding服务...</p>
+                    <p>模型提供商: 科大讯飞</p>
+                    <p>模型功能: 将文本映射为向量</p>
+                    <button class="init-btn" id="initBtn" style="display:none;">初始化embedding</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <div class="content-header">
+                <div class="back-btn" id="backBtn">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </div>
+                <h2 class="current-title">智能资源推荐</h2>
+            </div>
+
+            <!-- 搜索区域 -->
+            <div class="search-section">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="请输入您的学习需求，例如：红军长征战略分析...">
+                    <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> 智能推荐</button>
+                </div>
+
+                <div class="examples">
+                    <h3>试试搜索以下关键词：</h3>
+                    <div class="tags">
+                        <div class="tag" data-tag="四渡赤水">四渡赤水</div>
+                        <div class="tag" data-tag="抗美援朝">抗美援朝</div>
+                        <div class="tag" data-tag="抗日战争">抗日战争</div>
+                        <div class="tag" data-tag="毛泽东军事思想">毛泽东军事思想</div>
+                        <div class="tag" data-tag="红军长征">红军长征</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 推荐结果区域 -->
+            <div class="results-grid" id="resultsGrid">
+                <!-- 初始欢迎消息 -->
+                <div class="welcome-message">
+                    <i class="fas fa-search"></i>
+                    <h3>输入关键词，获取智能推荐</h3>
+                    <p>基于讯飞embedding模型智能匹配国防教育资源</p>
+                </div>
+
+                <!-- 加载动画 -->
+                <div class="loader" id="loader">
+                    <div class="loader-spinner"></div>
+                    <div class="loader-text">正在使用讯飞embedding模型分析您的需求，匹配最佳资源...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入axios库 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                // 随机属性
+                const size = Math.random() * 15 + 5;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const animationDelay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `-${animationDelay}s`;
+                particle.style.opacity = opacity;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // DOM元素
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const loader = document.getElementById('loader');
+        const tags = document.querySelectorAll('.tag');
+        const backBtn = document.getElementById('backBtn');
+        const initBtn = document.getElementById('initBtn');
+        const modelStatusEl = document.querySelector('.model-status p:first-child');
+
+        // 显示加载动画
+        function showLoader() {
+            loader.style.display = 'block';
+            resultsGrid.innerHTML = '';
+            resultsGrid.appendChild(loader);
+        }
+
+        // 隐藏加载动画
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+        // 生成推荐卡片
+        function generateRecommendationCards(recommendations) {
+            resultsGrid.innerHTML = '';
+
+            if (!recommendations || recommendations.length === 0) {
+                resultsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>没有找到匹配的资源</h3>
+                        <p>请尝试使用其他关键词搜索</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 创建结果标题
+            const resultsHeader = document.createElement('div');
+            resultsHeader.className = 'results-header';
+            resultsHeader.innerHTML = `
+                <h3 class="results-title">
+                    <i class="fas fa-star"></i> 为您推荐
+                </h3>
+            `;
+            resultsGrid.appendChild(resultsHeader);
+
+            // 只显示匹配度最高的三个资源（不分类型）
+            const topResults = recommendations.slice(0, 3);
+
+            // 添加推荐卡片
+            topResults.forEach(item => {
+                resultsGrid.appendChild(createCardElement(item));
+            });
+        }
+
+        // 创建卡片元素
+        function createCardElement(item) {
+            const icon = item.type === 'video' ? 'fas fa-video' : 'fas fa-file-alt';
+            const typeText = item.type === 'video' ? '视频课程' : '学习资料';
+            const typeColor = item.type === 'video' ? '#DC143C' : '#FFD700';
+
+            // 生成缩略图部分
+            let thumbnailContent;
+            if (item.thumbnail && item.thumbnail.trim() !== '') {
+                thumbnailContent = `<img src="${item.thumbnail}" class="result-thumbnail" alt="${item.title}">`;
+            } else {
+                // 为文档类型使用图标代替
+                const iconClass = item.type === 'video' ? 'video-icon' : 'doc-icon';
+                thumbnailContent = `
+                    <div class="icon-thumbnail ${iconClass}">
+                        <i class="${icon}"></i>
+                    </div>
+                `;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                ${thumbnailContent}
+                <div class="result-info">
+                    <h3 class="result-title">${item.title}</h3>
+                    <p class="result-type" style="color: ${typeColor}">
+                        <i class="${icon}"></i> ${typeText}
+                    </p>
+                    <p style="color: #FFE4B5;">${item.description}</p>
+                    <div class="tags-container">
+                        ${item.tags.map(tag => `<span class="result-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="match-score">
+                        <span>匹配度: ${Math.round(item.matchScore * 100)}%</span>
+                        <div class="match-bar">
+                            <div class="match-fill" style="width: ${item.matchScore * 100}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 添加点击事件
+            card.addEventListener('click', () => {
+                window.open(item.url, '_blank');
+            });
+
+            return card;
+        }
+
+        // 获取推荐结果（调用真实API）
+        async function getRecommendations(query) {
+            try {
+                const response = await axios.post('http://47.239.197.83:5000/recommend', {
+                    query: query
+                });
+                console.log('API响应:', response.data);
+                return response.data;
+            } catch (error) {
+                console.error('API调用失败:', error);
+                if (error.response && error.response.status === 500) {
+                    throw new Error('讯飞embedding服务初始化中，请稍后重试');
+                }
+                throw new Error('推荐服务暂时不可用，请稍后重试');
+            }
+        }
+
+        // 检查API状态（调用真实API）
+        async function checkAPIStatus() {
+            try {
+                const response = await axios.get('http://47.239.197.83:5000/status');
+                const data = response.data;
+                const statusText = data.embeddings_ready ? 
+                    `讯飞embedding模型已激活` : 
+                    `正在初始化embedding向量...`;
+                
+                const status = data.embeddings_ready ? 'active' : 'loading';
+                updateModelStatus(status, statusText);
+                
+                // 如果还在初始化，显示初始化按钮
+                if (!data.embeddings_ready) {
+                    initBtn.style.display = 'block';
+                }
+                
+                return data.embeddings_ready;
+            } catch (error) {
+                console.error('状态检查失败:', error);
+                updateModelStatus('inactive', '讯飞embedding服务离线 - 请检查后端服务');
+                initBtn.style.display = 'block';
+                return false;
+            }
+        }
+
+        // 手动初始化embedding
+        async function initializeEmbeddings() {
+            try {
+                updateModelStatus('loading', '正在初始化embedding向量...');
+                initBtn.disabled = true;
+                initBtn.textContent = '初始化中...';
+                
+                const response = await axios.post('http://47.239.197.83:5000/init_embeddings');
+                
+                if (response.data.success) {
+                    updateModelStatus('active', '讯飞embedding模型已激活');
+                    initBtn.style.display = 'none';
+                } else {
+                    updateModelStatus('inactive', '初始化失败，请重试');
+                    initBtn.disabled = false;
+                    initBtn.textContent = '重新初始化';
+                }
+            } catch (error) {
+                console.error('初始化失败:', error);
+                updateModelStatus('inactive', '初始化失败，请检查网络连接');
+                initBtn.disabled = false;
+                initBtn.textContent = '重新初始化';
+            }
+        }
+
+        // 执行搜索
+        async function performSearch() {
+            const query = searchInput.value.trim();
+
+            if (query === '') {
+                alert('请输入搜索内容');
+                return;
+            }
+
+            showLoader();
+
+            try {
+                // 先检查API状态
+                const isReady = await checkAPIStatus();
+                if (!isReady) {
+                    throw new Error('讯飞embedding服务尚未就绪，请等待初始化完成');
+                }
+
+                // 获取推荐结果
+                const results = await getRecommendations(query);
+
+                // 按匹配度降序排序
+                results.sort((a, b) => b.matchScore - a.matchScore);
+
+                // 生成推荐卡片
+                generateRecommendationCards(results);
+            } catch (error) {
+                console.error('搜索失败:', error);
+                resultsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-triangle" style="color:#DC143C;"></i>
+                        <h3>推荐服务暂时不可用</h3>
+                        <p>${error.message || '请稍后再试'}</p>
+                    </div>
+                `;
+            } finally {
+                hideLoader();
+            }
+        }
+
+        // 更新模型状态显示
+        function updateModelStatus(status, text) {
+            const statusEl = document.querySelector('.status-indicator');
+            if (!statusEl) return;
+
+            statusEl.className = 'status-indicator';
+
+            if (status === 'active') {
+                statusEl.classList.add('status-active');
+            } else if (status === 'inactive') {
+                statusEl.classList.add('status-inactive');
+            } else {
+                statusEl.classList.add('status-loading');
+            }
+
+            if (modelStatusEl) {
+                modelStatusEl.innerHTML = `<span class="status-indicator ${statusEl.className}"></span> ${text}`;
+            }
+        }
+
+        // 事件监听
+        searchBtn.addEventListener('click', performSearch);
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // 标签点击事件
+        tags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                searchInput.value = tag.getAttribute('data-tag');
+                performSearch();
+            });
+        });
+
+        // 返回按钮事件
+        backBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // 初始化按钮事件
+        initBtn.addEventListener('click', initializeEmbeddings);
+
+        // 初始化页面
+        window.onload = async () => {
+            // 初始状态显示加载中
+            updateModelStatus('loading', '正在连接讯飞embedding服务...');
+
+            // 检查API状态
+            await checkAPIStatus();
+
+            // 创建粒子效果
+            createParticles();
+        };
+    </script>
+</body>
+</html>

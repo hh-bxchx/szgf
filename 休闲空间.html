@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数智国防教育系统 - 休闲空间</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2C1810, #8B4513, #2C1810);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 返回首页按钮 */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 215, 0, 0.15);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+            z-index: 1000;
+            border: none;
+        }
+        
+        .home-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateX(-5px);
+        }
+        
+        /* 标题样式 */
+        .header {
+            text-align: center;
+            padding: 80px 0 40px;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 20px 0;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #FFD700, #FFA500, #DC143C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            100% { text-shadow: 0 0 25px rgba(255, 165, 0, 0.8); }
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            color: #FFE4B5;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 游戏区域样式 */
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .game-card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 0;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 45px rgba(139, 69, 19, 0.5);
+        }
+        
+        .game-image {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .game-card:hover .game-thumbnail {
+            transform: scale(1.05);
+        }
+        
+        .game-icon-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            color: rgba(255, 215, 0, 0.9);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            background: rgba(139, 69, 19, 0.8);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+        }
+        
+        .game-content {
+            padding: 30px;
+        }
+        
+        .game-title {
+            font-size: 2rem;
+            color: #FFD700;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .game-description {
+            font-size: 1.1rem;
+            color: #FFE4B5;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .game-features {
+            margin-bottom: 25px;
+        }
+        
+        .game-features h4 {
+            color: #FFA500;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features-list li {
+            color: rgba(255, 233, 181, 0.8);
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .features-list li::before {
+            content: "⚡";
+            position: absolute;
+            left: 0;
+            color: #FFD700;
+        }
+        
+        .play-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .play-btn:hover {
+            background: linear-gradient(45deg, #FFA500, #FF8C00);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .play-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* 游戏特色标签 */
+        .game-tags {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .game-tag {
+            background: rgba(255, 215, 0, 0.9);
+            color: #2C1810;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* 粒子背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.7);
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .games-container {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .games-container {
+                gap: 30px;
+                grid-template-columns: 1fr;
+            }
+            
+            .game-card {
+                margin: 0 10px;
+            }
+            
+            .game-content {
+                padding: 20px;
+            }
+            
+            .home-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <!-- 返回首页按钮 -->
+        <button class="home-btn" id="homeBtn">
+            <i class="fas fa-arrow-left"></i> 返回首页
+        </button>
+        
+        <!-- 标题区域 -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <h1 class="title">休闲空间</h1>
+            <p class="subtitle">在轻松中学习国防知识，增强国防意识，体验军事策略与历史文化</p>
+        </div>
+        
+        <!-- 游戏区域 -->
+        <div class="games-container">
+            <!-- 战争策略大师 -->
+            <div class="game-card">
+                <div class="game-image">
+                    <div class="game-tags">
+                        <span class="game-tag">策略</span>
+                        <span class="game-tag">战术</span>
+                    </div>
+                    <div class="game-icon-overlay">
+                        <i class="fas fa-chess"></i>
+                    </div>
+                </div>
+                <div class="game-content">
+                    <h2 class="game-title">战争策略大师</h2>
+                    <p class="game-description">
+                        体验经典战役的战略决策，学习军事指挥艺术。通过模拟历史著名战役，掌握战术运用和兵力调配的精髓。
+                    </p>
+                    <button class="play-btn" data-game="strategy">
+                        <i class="fas fa-play"></i> 开始游戏
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 军事博物馆云参观 -->
+            <div class="game-card">
+                <div class="game-image">
+                    <div class="game-tags">
+                        <span class="game-tag">教育</span>
+                        <span class="game-tag">VR</span>
+                    </div>
+                    <div class="game-icon-overlay">
+                        <i class="fas fa-museum"></i>
+                    </div>
+                </div>
+                <div class="game-content">
+                    <h2 class="game-title">军事博物馆云参观</h2>
+                    <p class="game-description">
+                        足不出户游览中国人民革命军事博物馆，近距离观察各类军事装备，了解我军发展历程和辉煌成就。
+                    </p>
+                    <button class="play-btn" data-game="museum">
+                        <i class="fas fa-eye"></i> 开始参观
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机属性
+                const size = Math.random() * 20 + 8;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const animationDelay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `-${animationDelay}s`;
+                particle.style.opacity = opacity;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 初始化粒子效果
+        createParticles();
+
+        // DOM元素
+        const homeBtn = document.getElementById('homeBtn');
+        const playBtns = document.querySelectorAll('.play-btn');
+
+        // 返回首页
+        homeBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // 游戏按钮点击事件
+        playBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const gameType = btn.getAttribute('data-game');
+                
+                if (gameType === 'strategy') {
+                    window.location.href = '战略决策游戏.html';
+                } else if (gameType === 'museum') {
+                    window.open('http://3d.jb.mil.cn/90zn/outside/tour.html', '_blank');
+                }
+            });
+        });
+
+        // 添加一些交互效果
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) rotateY(5deg)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) rotateY(0deg)';
+            });
+        });
+    </script>
+</body>
+</html>

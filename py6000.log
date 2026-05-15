@@ -1,0 +1,20 @@
+nohup: ignoring input
+INFO:     Started server process [429775]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:6000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52626 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:41562 - "POST /analyze_wrong_questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43178 - "POST /generate_similar_question HTTP/1.1" 200 OK
+INFO:     47.239.197.83:38960 - "POST /analyze_wrong_questions HTTP/1.1" 200 OK
+INFO:     183.219.205.253:19452 - "POST /analyze_wrong_questions HTTP/1.1" 422 Unprocessable Entity
+INFO:     117.91.195.215:34810 - "HEAD /analyze_wrong_questions HTTP/1.1" 405 Method Not Allowed
+INFO:     183.219.205.253:17423 - "POST /analyze_wrong_questions HTTP/1.1" 200 OK
+INFO:     183.219.205.253:17425 - "POST /analyze_wrong_questions HTTP/1.1" 200 OK
+INFO:     36.151.233.169:29714 - "HEAD /analyze_wrong_questions HTTP/1.1" 405 Method Not Allowed
+INFO:     183.219.205.253:17514 - "POST /analyze_wrong_questions HTTP/1.1" 200 OK
+INFO:     36.156.77.175:5112 - "HEAD /analyze_wrong_questions HTTP/1.1" 405 Method Not Allowed
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [429775]

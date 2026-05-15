@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线课程 - 数智国防教育系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2C1810, #8B4513, #2C1810);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1400px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px 0;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            margin-right: 30px;
+            height: fit-content;
+        }
+        
+        .sidebar-header {
+            padding: 0 30px 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 1.8rem;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-title i {
+            font-size: 1.5rem;
+        }
+        
+        .war-list {
+            list-style: none;
+        }
+        
+        .war-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .war-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .war-item.active {
+            background: rgba(255, 215, 0, 0.2);
+            border-left: 4px solid #FFD700;
+        }
+
+        /* 小型战役项目样式 */
+        .war-item-small {
+            padding: 10px 30px 10px 45px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            background: rgba(255, 215, 0, 0.03);
+        }
+        
+        .war-item-small:hover {
+            background: rgba(255, 215, 0, 0.08);
+        }
+        
+        .war-item-small.active {
+            background: rgba(255, 215, 0, 0.15);
+            border-left: 4px solid #FFD700;
+        }
+        
+        .war-name {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #FFE4B5;
+        }
+
+        .war-name-small {
+            font-size: 1rem;
+            margin-bottom: 3px;
+            color: #FFE4B5;
+        }
+        
+        .war-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 228, 181, 0.7);
+        }
+
+        .war-desc-small {
+            font-size: 0.8rem;
+            color: rgba(255, 228, 181, 0.6);
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            flex: 1;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .back-btn {
+            background: rgba(255, 215, 0, 0.15);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateX(-5px);
+        }
+        
+        .current-war {
+            font-size: 2rem;
+            color: #FFD700;
+            text-align: center;
+            flex: 1;
+        }
+        
+        /* 分区标题样式 */
+        .section-title {
+            font-size: 1.3rem;
+            color: #FFD700;
+            margin: 30px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        /* 视频网格 */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .video-card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            cursor: pointer;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.35);
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .video-info {
+            padding: 20px;
+        }
+        
+        .video-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #FFE4B5;
+        }
+        
+        .video-duration {
+            font-size: 0.9rem;
+            color: rgba(255, 228, 181, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* 文档网格样式 */
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        /* 文档卡片样式 */
+        .doc-card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            min-height: 180px;
+        }
+        
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.35);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        /* 文档图标样式 */
+        .doc-icon {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+        
+        /* 文档标题样式 */
+        .doc-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #FFE4B5;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+        
+        /* 文档信息样式 */
+        .doc-info {
+            font-size: 0.85rem;
+            color: rgba(255, 228, 181, 0.7);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        /* 文件类型标签样式 */
+        .file-type {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        /* 粒子背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.7);
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 30px;
+            }
+            
+            .war-list {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 20px 15px;
+            }
+            
+            .war-item,
+            .war-item-small {
+                min-width: 200px;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+            
+            .war-item.active,
+            .war-item-small.active {
+                border-left: none;
+                border-bottom: 4px solid #FFD700;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .videos-grid,
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .current-war {
+                font-size: 1.5rem;
+            }
+            
+            .doc-card {
+                min-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">
+                    <i class="fas fa-book-open"></i> 战争历史课程
+                </h2>
+            </div>
+            
+            <ul class="war-list">
+                        <!-- 四渡赤水 -->
+                <li class="war-item active" data-war="sdcs">
+                    <h3 class="war-name">四渡赤水</h3>
+                    <p class="war-desc">红军长征中的经典战役</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">一渡赤水</h3>
+                    <p class="war-desc-small">突围脱困西进川南</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">二渡赤水</h3>
+                    <p class="war-desc-small">回师黔北再克遵义</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">三渡赤水</h3>
+                    <p class="war-desc-small">佯动诱敌引兵西追</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">四渡赤水</h3>
+                    <p class="war-desc-small">声东击西南突甩敌</p>
+                </li>
+                        <!-- 抗美援朝 -->
+                <li class="war-item" data-war="kmych">
+                    <h3 class="war-name">抗美援朝</h3>
+                    <p class="war-desc">保家卫国的伟大战争</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">上甘岭战役</h3>
+                    <p class="war-desc-small">著名的阵地防御作战</p>
+                </li>
+                        <!-- 抗日战争 -->
+                <li class="war-item" data-war="krzc">
+                    <h3 class="war-name">抗日战争</h3>
+                    <p class="war-desc">中华民族的全面抗战</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">台儿庄战役</h3>
+                    <p class="war-desc-small">抗日战争的重要胜利</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">平型关大捷</h3>
+                    <p class="war-desc-small">打破日军不可战胜神话</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">百团大战</h3>
+                    <p class="war-desc-small">八路军主动出击的大规模战役</p>
+                </li>
+                        <!-- 解放战争 -->
+                <li class="war-item" data-war="jfzc">
+                    <h3 class="war-name">解放战争</h3>
+                    <p class="war-desc">人民解放的伟大战争</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">辽沈战役</h3>
+                    <p class="war-desc-small">解放东北全境</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">淮海战役</h3>
+                    <p class="war-desc-small">小推车推出来的胜利</p>
+                </li>
+                <li class="war-item-small" data-war="tezzy">
+                    <h3 class="war-name-small">平津战役</h3>
+                    <p class="war-desc-small">基本解放华北全境</p>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <div class="content-header">
+                <div class="back-btn" id="backBtn">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </div>
+                <h2 class="current-war">四渡赤水</h2>
+            </div>
+            
+            <!-- 视频区 -->
+            <h3 class="section-title"><i class="fas fa-video"></i> 视频课程</h3>
+            <div class="videos-grid" id="videosGrid">
+                <!-- 视频卡片将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 资料区 -->
+            <h3 class="section-title"><i class="fas fa-file-alt"></i> 学习资料</h3>
+            <div class="docs-grid" id="docsGrid">
+                <!-- 文档卡片将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机属性
+                const size = Math.random() * 15 + 5;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const animationDelay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `-${animationDelay}s`;
+                particle.style.opacity = opacity;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // 视频数据 - 现在使用在线视频链接
+        const videoData = {
+            sdcs: [
+                {
+                    title: "沙盘推演：四渡赤水（上） 史上最详细拆解长征最秀一役",
+                    thumbnail: "images/sdcs1.jpg", // 本地封面图片
+                    duration: "08:54",
+                    url: "https://www.bilibili.com/video/BV18A411e7Qj/?spm_id_from=333.337.search-card.all.click" // 在线视频链接
+                },
+                {
+                    title: "沙盘推演：四渡赤水（下）史上最详细拆解  长征最秀一役",
+                    thumbnail: "images/sdcs2.jpg",
+                    duration: "14:11",
+                    url: "https://www.bilibili.com/video/BV1SD4y1S7PE/?spm_id_from=333.337.search-card.all.click"
+                },
+                {
+                    title: "《四渡赤水》4K超清修复无删减完整版",
+                    thumbnail: "images/sdcs3.jpg",
+                    duration: "03:53:15",
+                    url: "https://www.bilibili.com/video/BV1huGizKEZd/?spm_id_from=333.337.search-card.all.click"
+                }
+            ],
+            kmych: [
+                {
+                    title: "上甘岭",
+                    thumbnail: "images/kmych1.jpg",
+                    duration: "02:03:58",
+                    url: "https://www.bilibili.com/bangumi/play/ep313063?theme=movie&spm_id_from=333.337.0.0"
+                },
+                {
+                    title: "抗美援朝究竟是怎么打的？全景式回顾立国之战！【列国志·合集】",
+                    thumbnail: "images/kmych2.jpg",
+                    duration: "03:55:33",
+                    url: "https://www.bilibili.com/video/BV16v411k7Sx/?spm_id_from=333.337.search-card.all.click"
+                },
+                {
+                    title: "毛主席关于抗美援朝的一段流传甚广的原声讲话",
+                    thumbnail: "images/kmych3.jpg",
+                    duration: "01:16",
+                    url: "https://www.bilibili.com/video/BV1Up4y1A7z2/?spm_id_from=333.337.search-card.all.click"
+                }
+            ],
+            krzc: [
+                {
+                    title: "【震撼】20分钟全方位回顾抗日战争",
+                    thumbnail: "images/krzc1.jpg",
+                    duration: "19:42",
+                    url: "https://www.bilibili.com/video/BV1Fx411b7NR/?spm_id_from=333.337.search-card.all.click"
+                },
+                {
+                    title: "一个日本人如何参加抗战？",
+                    thumbnail: "images/krzc2.jpg",
+                    duration: "22:22",
+                    url: "https://www.bilibili.com/video/BV1634y1s7GC/?spm_id_from=333.337.search-card.all.click"
+                },
+                {
+                    title: "抗日战争全程战线变化",
+                    thumbnail: "images/krzc3.jpg",
+                    duration: "22:56",
+                    url: "https://www.bilibili.com/video/BV1fs411m7tX/?spm_id_from=333.337.search-card.all.click"
+                }
+            ]
+        };
+        
+        // 文档数据
+        const docData = {
+            sdcs: [
+                {
+                    title: "红军四渡赤水路线图",
+                    type: "jpg",
+                    size: "2.1MB",
+                    url: "docs/sdcs-analysis.jpg"
+                },
+                {
+                    title: "中央红军四渡赤水河与南渡乌江示意图",
+                    type: "jpg",
+                    size: "461kB",
+                    url: "docs/中央红军四渡赤水河与南渡乌江示意图.jpg"
+                },
+                {
+                    title: "党史党建知识读本",
+                    type: "pdf",
+                    size: "1.3MB",
+                    url: "docs/党史党建知识读本.pdf"
+                },
+                {
+                    title: "毛泽东在四渡赤水战役指挥中的关键作用",
+                    type: "pdf",
+                    size: "1.1MB",
+                    url: "docs/毛泽东在四渡赤水战役指挥中的关键作用.pdf"
+                },
+                {
+                    title: " 中央红军在贵州的若干重大问题",
+                    type: "pdf",
+                    size: "861kb",
+                    url: "docs/中央红军在贵州的若干重大问题_金冲及.pdf"
+                },
+                {
+                    title: "关于红军长征史研究中的若干问题",
+                    type: "pdf",
+                    size: "218kb",
+                    url: "docs/关于红军长征史研究中的若干问题_郭德宏.pdf"
+                }
+            ],
+            kmych: [
+                {
+                    title: "新中国抗美援朝运动中的社会动员和人民主体-以北京市历史档案为基础进行分析",
+                    type: "pdf",
+                    size: "541kB",
+                    url: "docs/新中国抗美援朝运动中的社会动员和人民主体-以北京市历史档案为基础进行分析.pdf"
+                },
+                {
+                    title: "抗美援朝战争中志愿军的坑道战研究",
+                    type: "pdf",
+                    size: "1.2MB",
+                    url: "docs/抗美援朝战争中志愿军的坑道战研究.pdf"
+                },
+                {
+                    title: "抗美援朝时期志愿军后方疏散工作历史研究——以安东（今丹东）为例",
+                    type: "pdf",
+                    size: "1.4MB",
+                    url: "docs/抗美援朝时期志愿军后方疏散工作历史研究——以安东（今丹东）为例_李双岩.pdf"
+                },
+                {
+                    title: "抗美援朝运动中的社会动员",
+                    type: "pdf",
+                    size: "10.6MB",
+                    url: "docs/抗美援朝运动中的社会动员_侯松涛.pdf"
+                },
+                {
+                    title: "在纪念中国人民志愿军抗美援朝出国作战70周年大会上的讲话",
+                    type: "pdf",
+                    size: "162kb",
+                    url: "docs/在纪念中国人民志愿军抗美援朝出国作战70周年大会上的讲话_习近平.pdf"
+                },
+                {
+                    title: "论抗美援朝战争的国内宣传工作",
+                    type: "pdf",
+                    size: "1.05MB",
+                    url: "论抗美援朝战争的国内宣传工作_孙丹.pdf"
+                }
+            ],
+            krzc: [
+                {
+                    title: "《不能忘却的记忆--32位抗战老兵口述史》",
+                    type: "pdf",
+                    size: "752kb",
+                    url: "docs/《不能忘却的记忆--32位抗战老兵口述史》.pdf"
+                },
+                {
+                    title: "抗日战争时期新四军的征兵工作",
+                    type: "pdf",
+                    size: "23.2MB",
+                    url: "docs/抗日战争时期新四军的征兵工作.pdf"
+                },
+                {
+                    title: "抗日战争时期新四军武器弹药来源探析",
+                    type: "pdf",
+                    size: "28.4MB",
+                    url: "docs/抗日战争时期新四军武器弹药来源探析.pdf"
+                },
+                {
+                    title: "抗日战争时期国共两党社会动员研究",
+                    type: "pdf",
+                    size: "2.17MB",
+                    url: "docs/抗日战争时期国共两党社会动员研究_张丽梅.pdf"
+                },
+                {
+                    title: "在纪念中国人民抗日战争暨世界反法西斯战争胜利75周年座谈会上的讲话",
+                    type: "pdf",
+                    size: "138kb",
+                    url: "docs/在纪念中国人民抗日战争暨世界反法西斯战争胜利75周年座谈会上的讲话_习近平.pdf"
+                },
+                {
+                    title: "抗战时期陕甘宁边区的农村经济研究",
+                    type: "pdf",
+                    size: "1.28MB",
+                    url: "docs/抗战时期陕甘宁边区的农村经济研究_闫庆生.pdf"
+                }
+            ]
+            };
+    
+        
+        // DOM元素
+        const warItems = document.querySelectorAll('.war-item, .war-item-small');
+        const currentWarTitle = document.querySelector('.current-war');
+        const videosGrid = document.getElementById('videosGrid');
+        const docsGrid = document.getElementById('docsGrid');
+        const backBtn = document.getElementById('backBtn');
+        
+        // 加载视频列表
+        function loadVideos(warId) {
+            videosGrid.innerHTML = '';
+            
+            const videos = videoData[warId];
+            
+            videos.forEach(video => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.innerHTML = `
+                    <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
+                    <div class="video-info">
+                        <h3 class="video-title">${video.title}</h3>
+                        <p class="video-duration">
+                            <i class="far fa-clock"></i> ${video.duration}
+                        </p>
+                    </div>
+                `;
+                
+                // 点击视频卡片直接在新标签页打开视频链接
+                videoCard.addEventListener('click', () => {
+                    window.open(video.url, '_blank');
+                });
+                
+                videosGrid.appendChild(videoCard);
+            });
+        }
+        
+        // 加载文档列表
+        function loadDocs(warId) {
+            docsGrid.innerHTML = '';
+            
+            const docs = docData[warId];
+            
+            docs.forEach(doc => {
+                const docCard = document.createElement('div');
+                docCard.className = 'doc-card';
+                
+                // 根据文件类型选择图标
+                let iconClass = 'far fa-file';
+                if (doc.type === 'pdf') iconClass = 'far fa-file-pdf';
+                if (doc.type === 'docx') iconClass = 'far fa-file-word';
+                if (doc.type === 'jpg' || doc.type === 'png') iconClass = 'far fa-file-image';
+                
+                docCard.innerHTML = `
+                    <i class="${iconClass} doc-icon"></i>
+                    <h3 class="doc-title">${doc.title}</h3>
+                    <div class="doc-info">
+                        <span class="file-type">${doc.type.toUpperCase()}</span>
+                        <span>${doc.size}</span>
+                    </div>
+                `;
+                
+                // 点击文档卡片下载文件
+                docCard.addEventListener('click', () => {
+                    window.open(doc.url, '_blank');
+                });
+                
+                docsGrid.appendChild(docCard);
+            });
+        }
+        
+        // 初始化加载四渡赤水视频和文档
+        loadVideos('sdcs');
+        loadDocs('sdcs');
+        
+        // 侧边栏点击事件
+        warItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // 更新活动状态
+                warItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                
+                // 更新标题和内容列表
+                const warName = item.querySelector('.war-name, .war-name-small').textContent;
+                currentWarTitle.textContent = warName;
+                
+                const warId = item.getAttribute('data-war');
+                loadVideos(warId);
+                loadDocs(warId);
+            });
+        });
+        
+        // 返回按钮事件
+        backBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+        
+        // 初始化粒子效果
+        createParticles();
+    </script>
+</body>
+</html>

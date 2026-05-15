@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数智国防教育系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2C1810, #8B4513, #2C1810);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 95%;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* 首页样式 */
+        .header {
+            text-align: center;
+            padding: 40px 0 20px;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
+
+        .title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 20px 0;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #FFD700, #FFA500, #DC143C);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            animation: titleGlow 2s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            100% { text-shadow: 0 0 25px rgba(255, 165, 0, 0.8); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: #FFE4B5;
+            max-width: 100%;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            white-space: nowrap;
+            overflow: visible;
+        }
+
+        .card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            margin: 20px auto;
+            max-width: 1200px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 69, 19, 0.5);
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            gap: 15px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 215, 0, 0.06);
+            border-radius: 20px;
+            padding: 30px;
+            width: 220px;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            cursor: pointer;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px) rotate(2deg);
+            background: rgba(255, 215, 0, 0.12);
+            box-shadow: 0 15px 30px rgba(220, 20, 60, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .feature-title {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #FFA500;
+        }
+
+        .feature-desc {
+            font-size: 1.1rem;
+            color: #FFE4B5;
+            line-height: 1.7;
+        }
+
+        /* 功能页面样式 */
+        .page {
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .back-btn {
+            background: rgba(255, 215, 0, 0.15);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateX(-5px);
+        }
+
+        .page-title {
+            font-size: 2.8rem;
+            text-align: center;
+            margin: 20px 0 40px;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .content-box {
+            background: rgba(139, 69, 19, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            line-height: 1.9;
+            font-size: 1.2rem;
+            border-left: 5px solid #FFD700;
+            box-shadow: inset 0 0 20px rgba(139, 69, 19, 0.2);
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            color: #FFD700;
+        }
+
+        .content-text {
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin: 30px 0 20px;
+            color: #FFA500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            font-size: 1.5rem;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.7);
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .system-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: rgba(255, 215, 0, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            flex: 1;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .info-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #FFA500;
+        }
+
+        .info-content {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #FFE4B5;
+        }
+
+        @media (max-width: 1200px) {
+            .features {
+                flex-wrap: wrap;
+                gap: 30px;
+            }
+            
+            .feature-card {
+                width: 220px;
+                flex: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.8rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+                white-space: normal;
+            }
+
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature-card {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .system-info {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <!-- 首页 -->
+        <div id="homePage">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h1 class="title">数智国防教育系统</h1>
+                <p class="subtitle">融合先进科技与国防教育，打造智能化、互动化、沉浸式的国防学习体验平台</p>
+            </div>
+
+            <div class="card">
+                <div class="features">
+                    <!-- 在线课程 -->
+                    <div class="feature-card" id="courseCard">
+                        <div class="feature-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="feature-title">在线课程</h3>
+                        <p class="feature-desc">精选国防教育课程，涵盖军事理论、国防科技、国家安全等领域</p>
+                    </div>
+
+                    <!-- 开启问答 -->
+                    <div class="feature-card" id="qaCard">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="feature-title">开启问答</h3>
+                        <p class="feature-desc">智能国防知识问答，解答国防历史、军事科技、战略政策等各类问题</p>
+                    </div>
+
+                    <!-- 视频推荐 -->
+                    <div class="feature-card" id="videoRecommendCard">
+                        <div class="feature-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3 class="feature-title">视频推荐</h3>
+                        <p class="feature-desc">深化课程学习，定制个人需要</p>
+                    </div>
+
+                    <!-- 智慧题库 -->
+                    <div class="feature-card" id="homeworkCard">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="feature-title">智慧题库</h3>
+                        <p class="feature-desc">智能组卷与错题分析，个性化提升国防知识掌握</p>
+                    </div>
+
+                    <!-- 游戏空间 -->
+                    <div class="feature-card" id="gameCard">
+                        <div class="feature-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <h3 class="feature-title">休闲空间</h3>
+                        <p class="feature-desc">在轻松中学习国防知识，增强国防意识</p>
+                    </div>
+                </div>
+
+                <div class="system-info">
+                    <div class="info-card">
+                        <h4 class="info-title">平台优势</h4>
+                        <p class="info-content">• 采用AI智能技术，个性化学习路径<br>• 融合VR/AR技术，沉浸式体验<br>• 实时更新国防资讯与政策<br>• 多终端无缝衔接学习体验</p>
+                    </div>
+                    <div class="info-card">
+                        <h4 class="info-title">学习数据</h4>
+                        <p class="info-content">• 注册用户：52,841人<br>• 课程数量：128门<br>• 平均学习时长：45分钟/天<br>• 知识掌握率：提升38%</p>
+                    </div>
+                    <div class="info-card">
+                        <h4 class="info-title">近期更新</h4>
+                        <p class="info-content">• 新增"现代战争演变史"课程<br>• 国防知识问答库更新至2.0<br>• 优化作业批改AI算法<br>• 新增智能视频推荐系统</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 开启问答页面 -->
+        <div id="qaPage" class="page">
+            <div class="result-header">
+                <div class="back-btn" id="qaBackBtn">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </div>
+                <h2 class="page-title">国防知识问答</h2>
+                <div class="logo">
+                    <i class="fas fa-comments"></i>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="content-box">
+                    <div class="content-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h2 class="page-title">智能国防问答系统</h2>
+                    <p class="content-text">
+                        在这里，您可以提出任何与国防相关的问题，我们的AI系统将为您提供专业、准确的解答。<br>
+                        系统涵盖军事历史、武器装备、战略战术、国防政策等各个领域，为您提供全面的国防知识服务。
+                    </p>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-lightbulb"></i> 常见问题示例：</h3>
+                <div class="info-content" style="padding: 0 20px;">
+                    <p>• 我国现行国防政策的核心内容是什么？</p>
+                    <p>• 现代战争中的信息战主要包括哪些方面？</p>
+                    <p>• 航空母舰在现代海军中扮演什么角色？</p>
+                    <p>• 如何理解总体国家安全观？</p>
+                    <p>• 我国国防现代化建设取得了哪些重要成就？</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 在线课程页面 -->
+        <div id="coursePage" class="page">
+            <div class="result-header">
+                <div class="back-btn" id="courseBackBtn">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </div>
+                <h2 class="page-title">国防在线课程</h2>
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="content-box">
+                    <div class="content-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h2 class="page-title">国防教育课程中心</h2>
+                    <p class="content-text">
+                        精选优质国防教育课程，涵盖军事理论、国防科技、国家安全、军事历史等多个领域。<br>
+                        课程形式包括视频讲座、互动课件、虚拟实训等，满足不同学习需求。
+                    </p>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-book-open"></i> 热门课程分类：</h3>
+                <div class="info-content" style="padding: 0 20px;">
+                    <p>• 军事理论与战略研究</p>
+                    <p>• 现代武器装备与技术</p>
+                    <p>• 国家安全与国防政策</p>
+                    <p>• 军事历史与著名战役</p>
+                    <p>• 国防科技与创新应用</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏空间页面 -->
+        <div id="gamePage" class="page">
+            <div class="result-header">
+                <div class="back-btn" id="gameBackBtn">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </div>
+                <h2 class="page-title">国防教育游戏</h2>
+                <div class="logo">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="content-box">
+                    <div class="content-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h2 class="page-title">国防互动游戏空间</h2>
+                    <p class="content-text">
+                        通过游戏化学习方式，在娱乐中掌握国防知识，增强国防意识。<br>
+                        包含战略决策、装备认知、历史战役等多种类型的国防主题游戏。
+                    </p>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-dice"></i> 热门游戏推荐：</h3>
+                <div class="info-content" style="padding: 0 20px;">
+                    <p>• 海疆保卫战 - 海军战略模拟游戏</p>
+                    <p>• 空天防御者 - 防空作战模拟</p>
+                    <p>• 军事装备识别挑战</p>
+                    <p>• 历史战役重演 - 情景决策游戏</p>
+                    <p>• 国防知识闯关答题</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 作业批改页面 -->
+        <div id="homeworkPage" class="page">
+            <div class="result-header">
+                <div class="back-btn" id="homeworkBackBtn">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </div>
+                <h2 class="page-title">国防作业批改</h2>
+                <div class="logo">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="content-box">
+                    <div class="content-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 class="page-title">智能作业批改系统</h2>
+                    <p class="content-text">
+                        上传您的国防作业，系统将进行智能批改并提供详细解析和学习建议。<br>
+                        支持多种题型批改，包括选择题、问答题、论述题等，帮助您巩固知识掌握。
+                    </p>
+                </div>
+
+                <h3 class="section-title"><i class="fas fa-tasks"></i> 支持批改的作业类型：</h3>
+                <div class="info-content" style="padding: 0 20px;">
+                    <p>• 国防知识选择题</p>
+                    <p>• 军事理论简答题</p>
+                    <p>• 国防政策论述题</p>
+                    <p>• 军事历史分析题</p>
+                    <p>• 国防科技应用题</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                // 随机属性
+                const size = Math.random() * 20 + 8;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const animationDelay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `-${animationDelay}s`;
+                particle.style.opacity = opacity;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 页面元素
+        const homePage = document.getElementById('homePage');
+
+        // 功能页面
+        const qaPage = document.getElementById('qaPage');
+        const coursePage = document.getElementById('coursePage');
+        const gamePage = document.getElementById('gamePage');
+        const homeworkPage = document.getElementById('homeworkPage');
+
+        // 功能卡片
+        const qaCard = document.getElementById('qaCard');
+        const courseCard = document.getElementById('courseCard');
+        const gameCard = document.getElementById('gameCard');
+        const homeworkCard = document.getElementById('homeworkCard');
+        const videoRecommendCard = document.getElementById('videoRecommendCard');
+
+        // 返回按钮
+        const qaBackBtn = document.getElementById('qaBackBtn');
+        const courseBackBtn = document.getElementById('courseBackBtn');
+        const gameBackBtn = document.getElementById('gameBackBtn');
+        const homeworkBackBtn = document.getElementById('homeworkBackBtn');
+
+        // 切换到功能页面
+        function showPage(page) {
+            homePage.style.display = 'none';
+            qaPage.style.display = 'none';
+            coursePage.style.display = 'none';
+            gamePage.style.display = 'none';
+            homeworkPage.style.display = 'none';
+
+            page.style.display = 'block';
+        }
+
+        // 返回到首页
+        function goBackToHome() {
+            showPage(homePage);
+        }
+
+        // 事件监听
+        qaCard.addEventListener('click', () => {
+            window.location.href = '开启问答1.html';
+        });
+
+        // 修改这里：点击在线课程卡片跳转到在线课程.html
+        courseCard.addEventListener('click', () => {
+            window.location.href = '在线课程.html';
+        });
+
+        gameCard.addEventListener('click', () => {
+            window.location.href = '休闲空间.html';
+        });
+        homeworkCard.addEventListener('click', () => {
+            window.location.href = '智慧题库1.html';
+        });
+
+        // 视频推荐卡片点击事件
+        videoRecommendCard.addEventListener('click', () => {
+            window.location.href = '视频推荐.html';
+        });
+
+        qaBackBtn.addEventListener('click', goBackToHome);
+        courseBackBtn.addEventListener('click', goBackToHome);
+        homeworkBackBtn.addEventListener('click', goBackToHome);
+
+        // 初始化粒子效果
+        createParticles();
+    </script>
+</body>
+</html>

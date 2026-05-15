@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数智国防教育系统 - 智能问答</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2C1810, #8B4513, #2C1810);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            position: relative;
+        }
+        
+        /* 左上角提拉助手  */
+        .tila-assistant {
+            position: relative;
+            top: 5px;
+            right: 30px; 
+            z-index: 1000;
+            background: rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 320px;
+        }
+        
+        .tila-assistant:hover {
+            background: rgba(255, 215, 0, 0.25);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(139, 69, 19, 0.4);
+        }
+        
+        .tila-avatar {
+            width: 100px; 
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tila-text {
+            color: white;
+            font-size: 1.5rem; 
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            line-height: 1.3;
+        }
+        
+        .tila-text .highlight {
+            color: #FFD700;
+            font-weight: 600;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-8px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+        }
+        
+        /* 问答页面样式 */
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .back-btn {
+            background: rgba(255, 215, 0, 0.15);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateX(-5px);
+        }
+        
+        .page-title {
+            font-size: 2.8rem;
+            text-align: center;
+            margin: 20px 0 40px;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        .card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            margin: 20px auto;
+            max-width: 1000px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* 问答输入区域 */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 20px 25px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 15px;
+            background: rgba(139, 69, 19, 0.2);
+            color: white;
+            box-shadow: inset 0 3px 12px rgba(139, 69, 19, 0.25);
+            transition: all 0.3s ease;
+            resize: none;
+            min-height: 80px;
+            max-height: 200px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            background: rgba(139, 69, 19, 0.3);
+            box-shadow: inset 0 3px 15px rgba(139, 69, 19, 0.3), 0 0 0 3px rgba(255, 215, 0, 0.4);
+        }
+        
+        .chat-input::placeholder {
+            color: rgba(255, 233, 181, 0.6);
+            font-style: italic;
+        }
+        
+        .chat-input:disabled {
+            background: rgba(139, 69, 19, 0.15);
+            cursor: not-allowed;
+        }
+        
+        .send-btn {
+            width: 60px;
+            height: 60px;
+            align-self: flex-end;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 7px 20px rgba(139, 69, 19, 0.35);
+        }
+        
+        .send-btn:hover:not(:disabled) {
+            background: linear-gradient(45deg, #FFA500, #FF8C00);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(139, 69, 19, 0.45);
+        }
+        
+        .send-btn:active:not(:disabled) {
+            transform: translateY(2px);
+        }
+        
+        .send-btn:disabled {
+            background: rgba(139, 69, 19, 0.2);
+            cursor: not-allowed;
+        }
+        
+        .send-btn i {
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        /* 聊天消息区域 */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 10px;
+            margin-bottom: 20px;
+            max-height: 500px;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            line-height: 1.7;
+            font-size: 1.1rem;
+            position: relative;
+        }
+        
+        .user-message {
+            background: rgba(255, 165, 0, 0.15);
+            border-left: 5px solid #FFD700;
+            margin-left: 40px;
+        }
+        
+        .ai-message {
+            background: rgba(139, 69, 19, 0.2);
+            border-left: 5px solid #FFA500;
+            margin-right: 40px;
+        }
+        
+        .message-role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .ai-message .message-role {
+            color: #FFA500;
+        }
+        
+        /* 加载指示器 */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+            color: #FFD700;
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #FFD700;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 粒子背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.7);
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .chat-input-container {
+                flex-direction: column;
+            }
+            
+            .send-btn {
+                width: 100%;
+                height: 50px;
+            }
+            
+            .message {
+                margin-left: 10px !important;
+                margin-right: 10px !important;
+            }
+            
+            .tila-assistant {
+                top: 10px;
+                right: 10px;
+                padding: 15px 18px;
+                max-width: 260px;
+            }
+            
+            .tila-avatar {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .tila-avatar::before {
+                font-size: 28px;
+            }
+            
+            .tila-text {
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* 针对小屏幕的特殊调整 */
+        @media (max-width: 1200px) {
+            .tila-assistant {
+                right: calc((100vw - 90vw) / 2 + (90vw - min(1000px, 90vw)) / 2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
+
+    
+    <div class="container">
+        <!-- 问答页面 -->
+        <div id="qaPage">
+            <div class="result-header">
+                <div class="back-btn" id="qaBackBtn">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </div>
+                <h2 class="page-title">国防知识问答</h2>
+                    <!-- 左上角提拉助手 -->
+                <div class="tila-assistant" id="tilaBtn">
+                    <div class="tila-avatar">
+                        <img src="提拉军装半身.png" alt="提拉助手" style="width: 100%; height: 100%; border-radius: 50%;">
+                    </div>
+                    <div class="tila-text">
+                        AI无法解答？<br>问问<span class="highlight">提拉</span>！
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- 初始 AI 欢迎消息 -->
+                        <div class="message ai-message">
+                            <div class="message-role">国防AI助手</div>
+                            <div class="message-content">
+                                您好！我是国防AI助手，可以解答您关于国防、军事、国家安全等方面的问题。
+                                <br><br>
+                                例如您可以询问：<br>• 我国国防政策的主要内容是什么？<br>• 现代战争有哪些特点？<br>• 如何理解总体国家安全观？
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <textarea id="userInput" class="chat-input" placeholder="请输入您的国防相关问题..."></textarea>
+                        <button id="sendBtn" class="send-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="loading" class="loading">
+                        <div class="spinner"></div>
+                        <p>正在思考中，请稍候...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 配置您的PHP代理地址 - 请修改为您的实际地址
+        const API_PROXY_URL = 'http://www.shuzhiguofang.top/开启问答.php';
+
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 20 + 8;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const animationDelay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `-${animationDelay}s`;
+                particle.style.opacity = opacity;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 初始化粒子效果
+        createParticles();
+
+        // 页面元素
+        const qaBackBtn = document.getElementById('qaBackBtn');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const loadingIndicator = document.getElementById('loading');
+
+        // 返回到首页
+        qaBackBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        // 添加消息到聊天区域，返回 .message-content 节点
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+
+            const roleDiv = document.createElement('div');
+            roleDiv.className = 'message-role';
+            roleDiv.textContent = role === 'user' ? '您' : '国防AI助手';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = content;
+
+            messageDiv.appendChild(roleDiv);
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            return contentDiv;
+        }
+
+        // 清理 Markdown 格式
+        function cleanMarkdown(text) {
+            text = text.replace(/^#+\s+/gm, '');
+            text = text.replace(/\*\*(.*?)\*\*/g, '$1');
+            text = text.replace(/\|.*?\|\n/g, '');
+            text = text.replace(/```[\s\S]*?```/g, '');
+            text = text.replace(/^\s*[-*+]\s+/gm, '• ');
+            text = text.replace(/^\s*\d+\.\s+/gm, '');
+            return text;
+        }
+
+        // 调用讯飞API通过PHP代理 (流式)
+        async function callXunfeiAPI(question, onData) {
+            const messages = [
+                {
+                    role: "system",
+                    content: `你是一名国防知识专家，专门解答关于国防、军事、国家安全等方面的问题。
+请以专业、准确、易懂的方式回答用户的问题，回答要详细且有逻辑性。
+回答时请使用纯文本格式，不要使用Markdown或其他格式化符号。
+如果问题超出国防领域，请礼貌地告知并引导用户提出国防相关问题。`
+                },
+                { role: "user", content: question }
+            ];
+
+            try {
+
+                const resp = await fetch(API_PROXY_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        messages: messages
+                    })
+                });
+
+                if (!resp.ok) {
+                    const errorText = await resp.text();
+                    throw new Error(`API请求失败: ${resp.status} - ${errorText}`);
+                }
+
+                // 处理流式响应
+                const reader = resp.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    buffer += decoder.decode(value, { stream: true });
+                    
+                    // 处理可能的多个数据块
+                    let lines = buffer.split('\n');
+                    buffer = lines.pop() || ''; // 保留最后一个可能不完整的行
+                    
+                    for (let line of lines) {
+                        if (line.trim() === '') continue;
+                        
+                        if (line.startsWith('data: ')) {
+                            const data = line.slice(6).trim();
+                            if (data === '[DONE]') {
+                                return;
+                            }
+                            
+                            try {
+                                const parsed = JSON.parse(data);
+                                if (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) {
+                                    const content = parsed.choices[0].delta.content;
+                                    onData(content);
+                                }
+                            } catch (parseError) {
+                                console.warn('解析JSON数据时出错:', parseError, 'data:', data);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('API调用错误:', err);
+                onData("网络请求失败，请稍后再试。详细错误：" + err.message);
+            }
+        }
+
+        // 处理用户发送消息
+        async function handleSendMessage() {
+            const question = userInput.value.trim();
+            if (!question) return;
+
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+
+            // 显示用户消息
+            addMessage('user', question);
+            userInput.value = '';
+            loadingIndicator.style.display = 'block';
+
+            // 创建 AI 消息节点，用于实时更新
+            let fullText = '';
+            const aiContentDiv = addMessage('ai', '&nbsp;');
+
+            // 流式接收并更新
+            await callXunfeiAPI(question, (chunk) => {
+                fullText += chunk;
+                aiContentDiv.innerHTML = cleanMarkdown(fullText);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+
+            loadingIndicator.style.display = 'none';
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+
+        sendBtn.addEventListener('click', handleSendMessage);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+
+        const tilaBtn = document.getElementById('tilaBtn');
+
+        // 事件监听
+        tilaBtn.addEventListener('click', () => {
+            window.location.href = '给提拉留言.html';
+        });
+    </script>
+</body>
+</html>

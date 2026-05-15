@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数智国防教育系统 - 智慧题库</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2C1810, #8B4513, #2C1810);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 标题样式 */
+        .header {
+            text-align: center;
+            padding: 40px 0 20px;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        .title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 20px 0;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            100% { text-shadow: 0 0 25px rgba(255, 165, 0, 0.7); }
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #FFE4B5;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 试卷封面样式 */
+        .cover-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .cover-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.3);
+        }
+        
+        .cover-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(139, 69, 19, 0.4);
+        }
+        
+        .cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .cover-item:hover .cover {
+            transform: scale(1.05);
+        }
+        
+        .cover-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(139, 69, 19, 0.7);
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        /* 答题卡片样式 */
+        .card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            margin: 20px auto;
+            max-width: 800px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: none;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 69, 19, 0.5);
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .option {
+            display: block;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(255, 165, 0, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background: rgba(255, 165, 0, 0.2);
+            transform: translateX(5px);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 165, 0, 0.5);
+        }
+        
+        /* 结果卡片样式 */
+        .result {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: center;
+            display: none;
+        }
+        
+        .score {
+            font-size: 3rem;
+            color: #FFD700;
+            margin: 20px 0;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .explanation {
+            background: rgba(139, 69, 19, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: left;
+            border-left: 4px solid #FFD700;
+        }
+        
+        .restart-btn {
+            background: rgba(255, 215, 0, 0.15);
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.2);
+        }
+        
+        .restart-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateY(-3px);
+        }
+
+        /* 新增的返回首页按钮样式 */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 215, 0, 0.15);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(139, 69, 19, 0.2);
+            z-index: 10;
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .button-group button {
+            margin: 0;
+        }
+
+        /* AI错题分析样式 */
+        .ai-analysis {
+            background: rgba(139, 69, 19, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #FFA500;
+        }
+        
+        .ai-analysis h3 {
+            color: #FFA500;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .analysis-content {
+            line-height: 1.7;
+        }
+        
+        .analysis-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .analysis-spinner {
+            border: 3px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #FFA500;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 错题重练卡片样式 */
+        #retryCard {
+            background: rgba(255, 100, 100, 0.08);
+            border: 1px solid rgba(255, 100, 100, 0.2);
+        }
+
+        #retryCard h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+
+        /* 改进的解析样式 */
+        .retry-explanation {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .retry-explanation h4 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .retry-explanation p {
+            margin-bottom: 5px;
+        }
+
+        /* 粒子特效 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.7);
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .cover-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card, .result {
+                padding: 25px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <!-- 标题 -->
+        <div class="header">
+            <button id="homeBtn" class="home-btn"><i class="fas fa-home"></i> 返回首页</button>
+            <div class="logo"><i class="fas fa-shield-alt"></i></div>
+            <h1 class="title">智慧题库</h1>
+            <p class="subtitle">测试您的国防知识水平，提升国防安全意识</p>
+        </div>
+
+        <!-- 试卷封面 - 统一使用cover.jpg -->
+        <div class="cover-container">
+            <div class="cover-item" data-file="set1.json">
+                <img src="cover.jpg" alt="国防基础题（1）" class="cover">
+                <div class="cover-title">国防基础题（1）</div>
+            </div>
+            <div class="cover-item" data-file="set2.json">
+                <img src="cover.jpg" alt="国防基础题（2）" class="cover">
+                <div class="cover-title">国防基础题（2）</div>
+            </div>
+            <div class="cover-item" data-file="set3.json">
+                <img src="cover.jpg" alt="国防基础题（3）" class="cover">
+                <div class="cover-title">国防基础题（3）</div>
+            </div>
+        </div>
+
+        <!-- 答题卡片 -->
+        <div class="card" id="quizCard">
+            <h2 id="quizTitle">正在加载...</h2>
+            <form id="quizForm"></form>
+            <button id="submitBtn" class="submit-btn">提交答案</button>
+        </div>
+
+        <!-- 错题重练卡片 -->
+        <div class="card" id="retryCard" style="display: none;">
+            <h2><i class="fas fa-redo"></i> 错题重练</h2>
+            <form id="retryForm"></form>
+            <button id="retrySubmitBtn" class="submit-btn">提交答案</button>
+        </div>
+
+        <!-- 结果卡片 -->
+        <div class="result" id="resultCard">
+            <h2><i class="fas fa-clipboard-check"></i> 测试结果</h2>
+            <div class="score" id="scoreDisplay">0/0</div>
+            <div id="answerExplanations"></div>
+            <div class="button-group">
+                <button id="restartBtn" class="restart-btn">返回选题</button>
+                <button id="retryBtn" class="restart-btn" style="display: none;"><i class="fas fa-redo"></i> 错题重练</button>
+            </div>
+            <!-- AI分析区域 -->
+            <div class="ai-analysis" id="aiAnalysis" style="display: none;">
+                <h3><i class="fas fa-robot"></i> AI错题分析</h3>
+                <div class="analysis-content" id="analysisContent">正在分析您的答题情况...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // 随机属性
+                const size = Math.random() * 15 + 5;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const animationDelay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `-${animationDelay}s`;
+                particle.style.opacity = opacity;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 调用DeepSeek API进行错题分析
+        async function callAnalysisAPI(wrongQuestions) {
+            try {
+                const response = await fetch('http://47.239.197.83:6000/analyze_wrong_questions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        wrong_questions: wrongQuestions
+                    })
+                });
+                
+                if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
+                const data = await response.json();
+                return data.analysis;
+            } catch (error) {
+                console.error('API调用错误:', error);
+                return "分析服务暂时不可用，请稍后再试。";
+            }
+        }
+        
+        // 生成错题重练题目及解析
+        async function generateRetryQuestion(originalQuestion) {
+            try {
+                const response = await fetch('http://47.239.197.83:6000/generate_similar_question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        original_question: originalQuestion
+                    })
+                });
+                
+                if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
+                const data = await response.json();
+                
+                // 确保返回的数据有必要的字段
+                if (!data.question || !data.question.text || !data.question.options) {
+                    throw new Error('返回的题目格式不正确');
+                }
+                
+                return data.question;
+            } catch (error) {
+                console.error('生成错题重练题目失败:', error);
+                // 返回一个默认题目结构
+                return {
+                    text: "新生成的题目（生成失败时默认题目）",
+                    options: ["选项A", "选项B", "选项C", "选项D"],
+                    correct: 0,
+                    explanation: "这是默认的题目解析"
+                };
+            }
+        }
+
+        // 题目数据存储
+        const questionData = {
+            "set1.json": {
+                "title": "国防基础题（1）",
+                "questions": [
+                    {
+                        "id": "q1",
+                        "text": "我国第一艘国产航母名称是？",
+                        "options": ["辽宁舰", "山东舰", "福建舰", "广东舰"],
+                        "correct": 1,
+                        "explanation": "山东舰是我国第一艘完全自主设计、建造的航母，舷号17，于2019年12月17日交付海军。"
+                    },
+                    {
+                        "id": "q2",
+                        "text": "我国的国土面积约为多少万平方公里？",
+                        "options": ["860", "960", "1060", "1160"],
+                        "correct": 1,
+                        "explanation": "我国陆地面积约960万平方公里，领海面积约473万平方公里，是世界上面积第三大的国家。"
+                    },
+                    {
+                        "id": "q3",
+                        "text": "下列哪个不是我国武装力量的组成部分？",
+                        "options": ["中国人民解放军", "中国人民武装警察部队", "民兵", "公安特警"],
+                        "correct": 3,
+                        "explanation": "我国武装力量由中国人民解放军、中国人民武装警察部队和民兵组成，公安特警属于公安机关。"
+                    },
+                    {
+                        "id": "q4",
+                        "text": "我国现行的《国防法》是哪一年颁布的？",
+                        "options": ["1997年", "2001年", "2007年", "2012年"],
+                        "correct": 0,
+                        "explanation": "《中华人民共和国国防法》于1997年3月14日由第八届全国人民代表大会第五次会议通过并颁布实施。"
+                    },
+                    {
+                        "id": "q5",
+                        "text": "我国国防政策的基本方针是什么？",
+                        "options": ["积极防御", "主动进攻", "战略威慑", "全面防御"],
+                        "correct": 0,
+                        "explanation": "我国国防政策的基本方针是积极防御，坚持自卫防御的核战略，永远不称霸、不扩张。"
+                    }
+                ]
+            },
+            "set2.json": {
+                "title": "国防基础题（2）",
+                "questions": [
+                    {
+                        "id": "q1",
+                        "text": "东风-41洲际导弹最大射程约为多少公里？",
+                        "options": ["8000", "10000", "12000", "14000"],
+                        "correct": 3,
+                        "explanation": "东风-41最大射程约12000-14000公里，可覆盖全球，是我国战略威慑力量的重要组成部分。"
+                    },
+                    {
+                        "id": "q2",
+                        "text": "我国首个月球探测器叫什么名字？",
+                        "options": ["嫦娥一号", "玉兔号", "天问一号", "北斗一号"],
+                        "correct": 0,
+                        "explanation": "嫦娥一号是我国首个月球探测器，于2007年10月24日发射成功，开启了我国探月工程的序幕。"
+                    },
+                    {
+                        "id": "q3",
+                        "text": "我国自主研发的第五代战斗机是？",
+                        "options": ["歼-10", "歼-15", "歼-20", "歼-31"],
+                        "correct": 2,
+                        "explanation": "歼-20是我国自主研发的第五代隐身战斗机，2011年首飞，2017年正式列装部队。"
+                    },
+                    {
+                        "id": "q4",
+                        "text": "我国北斗卫星导航系统的卫星数量计划达到多少颗？",
+                        "options": ["25", "35", "45", "55"],
+                        "correct": 1,
+                        "explanation": "北斗三号全球系统由35颗卫星组成，包括5颗地球静止轨道卫星、27颗中圆地球轨道卫星和3颗倾斜地球同步轨道卫星。"
+                    },
+                    {
+                        "id": "q5",
+                        "text": "我国首艘国产万吨级驱逐舰是？",
+                        "options": ["052D型", "055型", "054A型", "056型"],
+                        "correct": 1,
+                        "explanation": "055型驱逐舰是我国自主研发的万吨级驱逐舰，具备强大的防空、反导、反舰、反潜和陆攻能力。"
+                    }
+                ]
+            },
+            "set3.json": {
+                "title": "国防基础题（3）",
+                "questions": [
+                    {
+                        "id": "q1",
+                        "text": "中国人民解放军建军节是哪一天？",
+                        "options": ["7月1日", "8月1日", "10月1日", "12月26日"],
+                        "correct": 1,
+                        "explanation": "1927年8月1日南昌起义，标志着人民军队诞生。1933年7月11日，中华苏维埃共和国临时中央政府决定8月1日为中国工农红军成立纪念日。"
+                    },
+                    {
+                        "id": "q2",
+                        "text": "我国的全民国防教育日是每年的哪一天？",
+                        "options": ["7月7日", "9月18日", "10月1日", "9月的第三个星期六"],
+                        "correct": 3,
+                        "explanation": "全民国防教育日是每年9月的第三个星期六，旨在普及国防教育，增强全民国防观念。"
+                    },
+                    {
+                        "id": "q3",
+                        "text": "我国现行的兵役制度是？",
+                        "options": ["义务兵役制", "志愿兵役制", "义务兵与志愿兵相结合", "募兵制"],
+                        "correct": 2,
+                        "explanation": "我国实行义务兵与志愿兵相结合、民兵与预备役相结合的兵役制度。"
+                    },
+                    {
+                        "id": "q4",
+                        "text": "我国国防动员的领导机构是？",
+                        "options": ["中央军委", "国务院", "全国人大", "国家国防动员委员会"],
+                        "correct": 3,
+                        "explanation": "国家国防动员委员会是国务院和中央军委领导下主管全国国防动员工作的议事协调机构。"
+                    },
+                    {
+                        "id": "q5",
+                        "text": "我国《国防教育法》规定，小学和初级中学应当将什么纳入教学内容？",
+                        "options": ["军事训练", "国防知识", "爱国主义教育", "军事理论"],
+                        "correct": 1,
+                        "explanation": "《国防教育法》规定，小学和初级中学应当将国防教育的内容纳入有关课程，将课堂教学与课外活动相结合，对学生进行国防教育。"
+                    }
+                ]
+            }
+        };
+
+        // DOM元素
+        const coverItems = document.querySelectorAll('.cover-item');
+        const quizCard = document.getElementById('quizCard');
+        const quizTitle = document.getElementById('quizTitle');
+        const quizForm = document.getElementById('quizForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultCard = document.getElementById('resultCard');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const answerExplanations = document.getElementById('answerExplanations');
+        const restartBtn = document.getElementById('restartBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const aiAnalysis = document.getElementById('aiAnalysis');
+        const analysisContent = document.getElementById('analysisContent');
+        const retryBtn = document.getElementById('retryBtn');
+        const retryCard = document.getElementById('retryCard');
+        const retryForm = document.getElementById('retryForm');
+        const retrySubmitBtn = document.getElementById('retrySubmitBtn');
+
+        // 存储错题和重练题目
+        let wrongQuestions = [];
+        let retryQuestions = [];
+
+        // 初始化粒子效果
+        createParticles();
+
+        // 点击封面加载题目
+        coverItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const fileName = item.getAttribute('data-file');
+                renderQuiz(questionData[fileName]);
+            });
+        });
+
+        // 渲染题目
+        function renderQuiz(data) {
+            quizTitle.textContent = data.title;
+            let html = '';
+            data.questions.forEach((q, idx) => {
+                html += `<div class="question">
+                    <div class="question-text">${idx + 1}. ${q.text}</div>`;
+                q.options.forEach((opt, i) => {
+                    html += `<label class="option">
+                        <input type="radio" name="${q.id}" value="${i}" required>
+                        ${String.fromCharCode(65 + i)}. ${opt}
+                    </label>`;
+                });
+                html += `</div>`;
+            });
+            quizForm.innerHTML = html;
+            quizCard.style.display = 'block';
+            resultCard.style.display = 'none';
+            retryCard.style.display = 'none';
+            aiAnalysis.style.display = 'none';
+            retryBtn.style.display = 'none';
+            
+            // 滚动到答题区域
+            quizCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 提交答案
+        submitBtn.addEventListener('click', async () => {
+            if (!quizForm.checkValidity()) {
+                alert('请完成所有题目！');
+                return;
+            }
+
+            const formData = new FormData(quizForm);
+            const currentData = questionData[Object.keys(questionData).find(key => 
+                quizTitle.textContent === questionData[key].title
+            )];
+            let score = 0;
+            let explanations = '';
+            wrongQuestions = []; // 清空之前的错题
+
+            currentData.questions.forEach(q => {
+                const userAnswer = parseInt(formData.get(q.id));
+                const correct = userAnswer === q.correct;
+                if (correct) score++;
+                else wrongQuestions.push(q);
+
+                explanations += `<div class="explanation">
+                    <p><strong>${q.text}</strong></p>
+                    <p style="color:${correct?'#32CD32':'#DC143C'}">
+                        ${correct ? '✓ 回答正确' : '✗ 回答错误'} - 您的选择：${String.fromCharCode(65 + userAnswer)}. ${q.options[userAnswer]}
+                    </p>
+                    <p>正确答案：${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}</p>
+                    <p>${q.explanation}</p>
+                </div>`;
+            });
+
+            scoreDisplay.textContent = `${score}/${currentData.questions.length}`;
+            answerExplanations.innerHTML = explanations;
+
+            quizCard.style.display = 'none';
+            resultCard.style.display = 'block';
+            aiAnalysis.style.display = 'block';
+            
+            // 如果有错题，显示错题重练按钮
+            if (wrongQuestions.length > 0) {
+                retryBtn.style.display = 'block';
+            } else {
+                retryBtn.style.display = 'none';
+            }
+            
+            // 显示加载状态
+            analysisContent.innerHTML = `
+                <div class="analysis-loading">
+                    <div class="analysis-spinner"></div>
+                    <span>正在分析您的答题情况...</span>
+                </div>
+            `;
+            
+            // 调用API获取分析结果
+            const analysis = await callAnalysisAPI(wrongQuestions);
+            analysisContent.innerHTML = analysis;
+            
+            // 滚动到结果区域
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // 错题重练按钮点击事件
+        retryBtn.addEventListener('click', async () => {
+            // 显示加载状态
+            retryForm.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="analysis-spinner"></div><p>正在生成错题重练题目...</p></div>';
+            retryCard.style.display = 'block';
+            resultCard.style.display = 'none';
+            retryCard.scrollIntoView({ behavior: 'smooth' });
+            
+            // 为每道错题生成一道新题目
+            retryQuestions = [];
+            for (const question of wrongQuestions) {
+                const newQuestion = await generateRetryQuestion(question);
+                if (newQuestion) {
+                    retryQuestions.push(newQuestion);
+                }
+            }
+            
+            // 渲染错题重练题目
+            renderRetryQuestions();
+        });
+
+        // 渲染错题重练题目
+        function renderRetryQuestions() {
+            if (retryQuestions.length === 0) {
+                retryForm.innerHTML = '<p style="text-align: center; padding: 20px;">生成题目失败，请稍后再试。</p>';
+                return;
+            }
+            
+            let html = '';
+            retryQuestions.forEach((q, idx) => {
+                html += `<div class="question">
+                    <div class="question-text">${idx + 1}. ${q.text}</div>`;
+                q.options.forEach((opt, i) => {
+                    html += `<label class="option">
+                        <input type="radio" name="retry_${idx}" value="${i}" required>
+                        ${String.fromCharCode(65 + i)}. ${opt}
+                    </label>`;
+                });
+                html += `<div class="retry-explanation" style="display: none;">
+                    <h4><i class="fas fa-lightbulb"></i> 题目解析</h4>
+                    <p>${q.explanation}</p>
+                </div>`;
+                html += `</div>`;
+            });
+            retryForm.innerHTML = html;
+        }
+
+        // 错题重练提交按钮事件
+        retrySubmitBtn.addEventListener('click', () => {
+            if (!retryForm.checkValidity()) {
+                alert('请完成所有题目！');
+                return;
+            }
+
+            const formData = new FormData(retryForm);
+            let score = 0;
+            let explanations = '';
+
+            retryQuestions.forEach((q, idx) => {
+                const userAnswer = parseInt(formData.get(`retry_${idx}`));
+                const correct = userAnswer === q.correct;
+                if (correct) score++;
+
+                explanations += `<div class="explanation">
+                    <p><strong>${q.text}</strong></p>
+                    <p style="color:${correct?'#32CD32':'#DC143C'}">
+                        ${correct ? '✓ 回答正确' : '✗ 回答错误'} - 您的选择：${String.fromCharCode(65 + userAnswer)}. ${q.options[userAnswer]}
+                    </p>
+                    <p>正确答案：${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}</p>
+                    <div class="retry-explanation" style="border-left-color: ${correct ? '#32CD32' : '#DC143C'};">
+                        <h4 style="color: ${correct ? '#32CD32' : '#DC143C'}"><i class="fas fa-lightbulb"></i> 题目解析</h4>
+                        <p>${q.explanation}</p>
+                    </div>
+                </div>`;
+            });
+
+            scoreDisplay.textContent = `${score}/${retryQuestions.length}`;
+            answerExplanations.innerHTML = explanations;
+            
+            retryCard.style.display = 'none';
+            resultCard.style.display = 'block';
+            aiAnalysis.style.display = 'none';
+            retryBtn.style.display = 'none';
+            
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // 返回选题
+        restartBtn.addEventListener('click', () => {
+            resultCard.style.display = 'none';
+            quizCard.style.display = 'none';
+            retryCard.style.display = 'none';
+            aiAnalysis.style.display = 'none';
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 返回首页
+        homeBtn.addEventListener('click', () => {
+            window.location.href = "index.html";
+        });
+    </script>
+</body>
+</html>

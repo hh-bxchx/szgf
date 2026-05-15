@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数智国防教育系统 - 给提拉留言</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2C1810, #8B4513, #2C1810);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            position: relative;
+        }
+        
+        /* 返回按钮 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 215, 0, 0.15);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+            z-index: 1000;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 165, 0, 0.25);
+            transform: translateX(-5px);
+        }
+
+        /* 上半部分 - 图片区域（修改后） */
+        .image-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 80px 0 40px 0;
+            padding: 0; /* 移除内边距 */
+            max-width: 800px; /* 与留言区域保持一致 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .image-container {
+            width: 100%; /* 占满父容器宽度 */
+            text-align: center;
+            /* 移除所有背景、边框、阴影和内边距样式 */
+        }
+        
+        .tila-image {
+            width: 100%; /* 占满容器宽度 */
+            height: auto;
+            max-height: 500px; /* 增加最大高度 */
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3);
+            transition: transform 0.3s ease;
+            object-fit: contain; /* 保持图片比例 */
+        }
+        
+        .tila-image:hover {
+            transform: scale(1.02); /* 减小放大倍数避免过度变形 */
+        }
+        
+        .image-placeholder {
+            width: 100%; /* 占满容器宽度 */
+            height: 400px; /* 增加高度 */
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px dashed rgba(255, 215, 0, 0.5);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+        
+        /* 下半部分 - 留言区域 */
+        .message-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .message-card {
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 69, 19, 0.5);
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #FFA500;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            background: rgba(139, 69, 19, 0.2);
+            color: white;
+            box-shadow: inset 0 3px 12px rgba(139, 69, 19, 0.25);
+            transition: all 0.3s ease;
+            resize: none;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            background: rgba(139, 69, 19, 0.3);
+            box-shadow: inset 0 3px 15px rgba(139, 69, 19, 0.3), 0 0 0 3px rgba(255, 215, 0, 0.4);
+        }
+        
+        .form-input::placeholder {
+            color: rgba(255, 233, 181, 0.6);
+            font-style: italic;
+        }
+        
+        .message-textarea {
+            min-height: 120px;
+            max-height: 300px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 7px 20px rgba(139, 69, 19, 0.35);
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover:not(:disabled) {
+            background: linear-gradient(45deg, #FFA500, #FF8C00);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(139, 69, 19, 0.45);
+        }
+        
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(2px);
+        }
+        
+        .submit-btn:disabled {
+            background: rgba(139, 69, 19, 0.2);
+            cursor: not-allowed;
+        }
+        
+        /* 成功提示 */
+        .success-message {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            color: #4caf50;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 粒子背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.7);
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .image-section {
+                margin: 60px 0 30px 0;
+            }
+            
+            .image-placeholder {
+                height: 300px; /* 移动端调整高度 */
+            }
+            
+            .message-card {
+                padding: 25px;
+                margin: 0 10px;
+            }
+            
+            .back-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <!-- 返回按钮 -->
+        <div class="back-btn" id="backBtn">
+            <i class="fas fa-arrow-left"></i> 返回问答
+        </div>
+        
+        <!-- 上半部分 - 图片区域 -->
+        <div class="image-section">
+            <div class="image-container">
+                <img src="提拉留言.png" alt="提拉" class="tila-image" style="font-size: 3rem; margin-right: 15px;">                
+            </div>
+        </div>
+        
+        <!-- 下半部分 - 留言区域 -->
+        <div class="message-section">
+            <div class="message-card">
+                <h2 class="section-title">
+                    <i class="fas fa-envelope"></i> 给提拉留言
+                </h2>
+                
+                <form id="messageForm" autocomplete="off">
+                    <div class="form-group">
+                        <label for="userName" class="form-label">您的姓名</label>
+                        <input type="text" id="userName" class="form-input" placeholder="请输入您的姓名" required autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userEmail" class="form-label">联系邮箱（可选）</label>
+                        <input type="email" id="userEmail" class="form-input" placeholder="请输入您的邮箱" autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="messageContent" class="form-label">留言内容</label>
+                        <textarea id="messageContent" class="form-input message-textarea" placeholder="请在这里写下您想对提拉说的话..." required autocomplete="off"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> 发送留言
+                    </button>
+                    
+                    <div id="successMessage" class="success-message">
+                        <i class="fas fa-check-circle"></i> 留言提交成功！
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 20 + 8;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100 + 100;
+                const animationDuration = Math.random() * 25 + 15;
+                const animationDelay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDuration = `${animationDuration}s`;
+                particle.style.animationDelay = `-${animationDelay}s`;
+                particle.style.opacity = opacity;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 初始化粒子效果
+        createParticles();
+
+        // 页面元素
+        const backBtn = document.getElementById('backBtn');
+        const messageForm = document.getElementById('messageForm');
+        const successMessage = document.getElementById('successMessage');
+
+        // 返回到问答页面
+        backBtn.addEventListener('click', () => {
+            window.location.href = '开启问答1.html';
+        });
+
+        // 处理表单提交
+        messageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value.trim();
+            const userEmail = document.getElementById('userEmail').value.trim();
+            const messageContent = document.getElementById('messageContent').value.trim();
+            
+            if (!userName || !messageContent) {
+                alert('请填写必填项目！');
+                return;
+            }
+            
+            // 创建留言对象
+            const messageData = {
+                姓名: userName,
+                邮箱: userEmail || '未提供',
+                留言内容: messageContent,
+                提交时间: new Date().toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                })
+            };
+            
+            try {
+                // 发送留言数据到服务器
+                const response = await fetch('save_message.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(messageData)
+                });
+                
+                if (response.ok) {
+                    // 显示成功消息
+                    successMessage.style.display = 'block';
+                    
+                    // 清空表单
+                    messageForm.reset();
+                    
+                    // 3秒后隐藏成功消息
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 3000);
+                } else {
+                    throw new Error('服务器响应错误');
+                }
+            } catch (error) {
+                console.error('提交失败:', error);
+                alert('提交失败，请重试！');
+            }
+        });
+    </script>
+</body>
+</html>
